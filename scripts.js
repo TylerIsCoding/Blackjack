@@ -37,16 +37,16 @@ function init() {
 
 function deal() {
     dealerCard1.src = randomCard();
-    dealerCard1.style.width = '12rem';
+    dealerCard1.style.width = '10rem';
     dealerCard1.classList.remove('hidden');
     dealerCard2.src = randomCard();
-    dealerCard2.style.width = '12rem';
+    dealerCard2.style.width = '10rem';
     dealerCard2.classList.remove('hidden');
     playerCard1.src = randomCard();
-    playerCard1.style.width = '12rem';
+    playerCard1.style.width = '10rem';
     playerCard1.classList.remove('hidden');
     playerCard2.src = randomCard();
-    playerCard2.style.width = '12rem';
+    playerCard2.style.width = '10rem';
     playerCard2.classList.remove('hidden');
     dealBtn.classList.add('hidden');
 }
