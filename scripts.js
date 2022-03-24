@@ -66,7 +66,7 @@ function createPlayer(num) {
     for (let i = 1; i <= num; i++) {
         let hand = new Array();
         let player = {
-            Name: i === num ? 'Dealer' : 'Player_' + i,
+            Name: 'Player_' + i,
             ID: i,
             Points: 0,
             Hand: hand,
@@ -89,12 +89,38 @@ function playerUI() {
         div_player.id = 'player_' + i;
         div_hand.id = 'hand_' + i;
         div_points.id = 'points_' + i;
-        div_playerid.innerHTML =
-            players[i].Name === 'Player_1' ? 'Player' : players[i].Name;
+        div_playerid.innerHTML = players[i].Name;
         div_player.appendChild(div_hand);
         div_player.appendChild(div_playerid);
         div_player.appendChild(div_points);
         document.getElementById('play--area').appendChild(div_player);
+    }
+}
+
+function getCardUI(card) {
+    let div_card = document.createElement('div');
+    let img_card = document.createElement('img');
+    div_card.className = 'card';
+    img_card.className = 'cardImg';
+    img_card.src = `/imgs/${card.Value}_of_${card.Suit}.png`;
+    div_card.innerHTML = card.Suit + ' ' + card.Value;
+    div_card.appendChild(img_card);
+    return div_card;
+}
+
+function renderCard(card, player) {
+    let hand = document.getElementById('hand_' + player);
+    hand.appendChild(getCardUI(card));
+}
+
+function dealHands() {
+    for (let i = 0; i < 2; i++) {
+        for (let x = 0; x < players.length; x++) {
+            let card = deck.pop();
+            players[x].Hand.push(card);
+            renderCard(card, x);
+            updatePoints();
+        }
     }
 }
 
@@ -103,7 +129,8 @@ function startGame() {
     shuffle(deck);
     createPlayer(2);
     playerUI();
-    console.log(players);
+    dealHands();
+    document.getElementById('player_' + currentPlayer).classList.add('active');
 }
 
 // TEST //
