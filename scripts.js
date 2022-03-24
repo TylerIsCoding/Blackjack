@@ -83,6 +83,7 @@ function playerUI() {
         const div_playerid = document.createElement('div');
         const div_hand = document.createElement('div');
         const div_points = document.createElement('div');
+        const div_status = document.createElement('div');
 
         div_points.className = 'points';
         div_points.id = 'points_' + i;
@@ -90,11 +91,13 @@ function playerUI() {
         div_player.className = 'player';
         div_hand.id = 'hand_' + i;
         div_hand.className = 'hand';
+        div_status.id = 'status';
 
         div_playerid.innerHTML = players[i].Name;
         div_playerid.className = 'playerName';
 
         div_player.appendChild(div_points);
+        div_player.appendChild(div_status);
         div_player.appendChild(div_hand);
         div_player.appendChild(div_playerid);
         document.getElementById('play--area').appendChild(div_player);
@@ -128,28 +131,47 @@ function renderCard(card, player) {
     hand.appendChild(getCardUI(card));
 }
 
+function hit() {
+    let card = deck.pop();
+    players[currentPlayer].Hand.push(card);
+    renderCard(card, currentPlayer);
+    updatePoints();
+    check();
+}
+
+function getPoints(player) {
+    let points = 0;
+    for (let i = 0; i < players[player].Hand.length; i++) {
+        points += players[player].Hand[i].Weight;
+    }
+    players[player].Points = points;
+    return points;
+}
+
+function updatePoints() {
+    for (let i = 0; i < players.length; i++) {
+        getPoints(i);
+        document.getElementById('points_' + i).innerHTML = players[i].Points;
+    }
+}
+
+function check() {
+    if (players[currentPlayer].Points > 21) {
+        document.getElementById('status').innerHTML =
+            players[currentPlayer].Name + ' loses!';
+        document.getElementById('status').style.display = 'inline-block';
+        end();
+    }
+}
+
 function dealHands() {
     for (let i = 0; i < 2; i++) {
         for (let x = 0; x < players.length; x++) {
             let card = deck.pop();
             players[x].Hand.push(card);
             renderCard(card, x);
+            updatePoints();
         }
-    }
-}
-
-function hit() {
-    let card = deck.pop();
-    players[currentPlayer].Hand.push(card);
-    renderCard(card, currentPlayer);
-    check();
-}
-
-function check() {
-    if (players[currentPlayer].Points > 21) {
-        document.getElementById(
-            'status'
-        ).innerHTML = `${players[currentPlayer]} Loses!`;
     }
 }
 
