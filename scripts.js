@@ -1,14 +1,8 @@
-// Elements
+// Global variables
 
-let playerCard1 = document.getElementById('playerCard_1');
-let playerCard2 = document.getElementById('playerCard_2');
-let dealerCard1 = document.getElementById('dealCard_1');
-let dealerCard2 = document.getElementById('dealCard_2');
-let dealBtn = document.querySelector('.btn--deal');
-
-// Variables
-
-const numbers = [
+const suits = ['spades', 'diamonds', 'clubs', 'hearts'];
+const values = [
+    'ace',
     '2',
     '3',
     '4',
@@ -21,46 +15,63 @@ const numbers = [
     'jack',
     'queen',
     'king',
-    'ace',
 ];
-
-const suit = ['clubs', 'spades', 'hearts', 'diamonds'];
+let deck = new Array();
+let players = new Array();
 
 // Functions
 
-function init() {
-    dealerCard1.classList.add('hidden');
-    dealerCard2.classList.add('hidden');
-    playerCard1.classList.add('hidden');
-    playerCard2.classList.add('hidden');
+function getDeck() {
+    deck = new Array();
+    for (let i = 0; i < suits.length; i++) {
+        for (let x = 0; x < values.length; x++) {
+            let weight = parseInt(values[x]);
+            if (
+                values[x] === 'jack' ||
+                values[x] === 'queen' ||
+                values[x] === 'king'
+            ) {
+                weight = 10;
+            }
+            if (values[x] === 'ace') {
+                weight = 11;
+            }
+            let card = {
+                Value: values[x],
+                Suit: suits[i],
+                Weight: weight,
+            };
+            deck.push(card);
+        }
+    }
 }
 
-function deal() {
-    dealerCard1.src = randomCard();
-    dealerCard1.style.width = '10rem';
-    dealerCard1.classList.remove('hidden');
-    dealerCard2.src = randomCard();
-    dealerCard2.style.width = '10rem';
-    dealerCard2.classList.remove('hidden');
-    playerCard1.src = randomCard();
-    playerCard1.style.width = '10rem';
-    playerCard1.classList.remove('hidden');
-    playerCard2.src = randomCard();
-    playerCard2.style.width = '10rem';
-    playerCard2.classList.remove('hidden');
-    dealBtn.classList.add('hidden');
+function shuffle(deck) {
+    for (let i = 0; i < 1000; i++) {
+        let location1 = Math.floor(Math.random() * deck.length);
+        let location2 = Math.floor(Math.random() * deck.length);
+        let temp = deck[location1];
+
+        deck[location1] = deck[location2];
+        deck[location2] = temp;
+    }
 }
 
-function randomCard() {
-    let randomNumber = Math.trunc(Math.random() * 13);
-    let randomSuit = Math.trunc(Math.random() * 4);
-    let cardNum = numbers[randomNumber];
-    let cardSuit = suit[randomSuit];
-    let card = String(`./imgs/${cardNum}_of_${cardSuit}.png`);
-    console.log(card);
-    return card;
+function createPlayer(num) {
+    players = new Array();
+    for (let i = 1; i <= num; i++) {
+        let hand = new Array();
+        let player = {
+            Name: 'Player ' + i,
+            ID: i,
+            Points: 0,
+            Hand: hand,
+        };
+        players.push(player);
+    }
 }
 
-init();
-
-dealBtn.addEventListener('click', deal);
+function startGame() {
+    getDeck();
+    shuffle();
+}
