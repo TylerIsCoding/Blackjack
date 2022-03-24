@@ -22,6 +22,7 @@ const values = [
 ];
 let deck = new Array();
 let players = new Array();
+let currentPlayer;
 
 // Functions
 
@@ -66,12 +67,11 @@ function createPlayer(num) {
     for (let i = 1; i <= num; i++) {
         let hand = new Array();
         let player = {
-            Name: 'Player_' + i,
+            Name: i === num ? 'Dealer' : 'Player_' + i,
             ID: i,
             Points: 0,
             Hand: hand,
         };
-
         players.push(player);
     }
 }
@@ -85,15 +85,31 @@ function playerUI() {
         const div_points = document.createElement('div');
 
         div_points.className = 'points';
-        div_player.className = 'player';
-        div_player.id = 'player_' + i;
-        div_hand.id = 'hand_' + i;
         div_points.id = 'points_' + i;
+        div_player.id = 'player_' + i;
+        div_player.className = 'player';
+        div_hand.id = 'hand_' + i;
+        div_hand.className = 'hand';
+
         div_playerid.innerHTML = players[i].Name;
+        div_playerid.className = 'playerName';
+
+        div_player.appendChild(div_points);
         div_player.appendChild(div_hand);
         div_player.appendChild(div_playerid);
-        div_player.appendChild(div_points);
         document.getElementById('play--area').appendChild(div_player);
+        if (i === 1) {
+            const btn_hit = document.createElement('button');
+            btn_hit.className = 'button';
+            btn_hit.id = 'btn--hit';
+            btn_hit.innerHTML = 'Hit';
+            document.getElementById('play--area').appendChild(btn_hit);
+            document
+                .getElementById('btn--hit')
+                .setAttribute('onclick', 'hit()');
+        } else {
+            continue;
+        }
     }
 }
 
@@ -103,7 +119,6 @@ function getCardUI(card) {
     div_card.className = 'card';
     img_card.className = 'cardImg';
     img_card.src = `/imgs/${card.Value}_of_${card.Suit}.png`;
-    div_card.innerHTML = card.Suit + ' ' + card.Value;
     div_card.appendChild(img_card);
     return div_card;
 }
@@ -119,12 +134,27 @@ function dealHands() {
             let card = deck.pop();
             players[x].Hand.push(card);
             renderCard(card, x);
-            updatePoints();
         }
     }
 }
 
+function hit() {
+    let card = deck.pop();
+    players[currentPlayer].Hand.push(card);
+    renderCard(card, currentPlayer);
+    check();
+}
+
+function check() {
+    if (players[currentPlayer].Points > 21) {
+        document.getElementById(
+            'status'
+        ).innerHTML = `${players[currentPlayer]} Loses!`;
+    }
+}
+
 function startGame() {
+    currentPlayer = 0;
     getDeck();
     shuffle(deck);
     createPlayer(2);
