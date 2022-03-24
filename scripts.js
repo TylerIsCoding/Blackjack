@@ -1,3 +1,7 @@
+// Get elements
+
+const dealButton = document.getElementById('btn--deal');
+
 // Global variables
 
 const suits = ['spades', 'diamonds', 'clubs', 'hearts'];
@@ -62,16 +66,46 @@ function createPlayer(num) {
     for (let i = 1; i <= num; i++) {
         let hand = new Array();
         let player = {
-            Name: 'Player ' + i,
+            Name: i === num ? 'Dealer' : 'Player_' + i,
             ID: i,
             Points: 0,
             Hand: hand,
         };
+
         players.push(player);
+    }
+}
+
+function playerUI() {
+    document.getElementById('play--area').innerHTML = '';
+    for (let i = 0; i < players.length; i++) {
+        const div_player = document.createElement('div');
+        const div_playerid = document.createElement('div');
+        const div_hand = document.createElement('div');
+        const div_points = document.createElement('div');
+
+        div_points.className = 'points';
+        div_player.className = 'player';
+        div_player.id = 'player_' + i;
+        div_hand.id = 'hand_' + i;
+        div_points.id = 'points_' + i;
+        div_playerid.innerHTML =
+            players[i].Name === 'Player_1' ? 'Player' : players[i].Name;
+        div_player.appendChild(div_hand);
+        div_player.appendChild(div_playerid);
+        div_player.appendChild(div_points);
+        document.getElementById('play--area').appendChild(div_player);
     }
 }
 
 function startGame() {
     getDeck();
-    shuffle();
+    shuffle(deck);
+    createPlayer(2);
+    playerUI();
+    console.log(players);
 }
+
+// TEST //
+
+dealButton.addEventListener('click', startGame);
