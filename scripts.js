@@ -66,19 +66,15 @@ class Player {
         this.bankroll -= wager;
         house.pot += wager;
     }
-    render() {
+    renderCardSingle(card) {
+        let img_card = document.createElement('img');
+        img_card.src = card.imgURL;
+        img_card.className = 'img--card';
+        document.getElementById('play--area').appendChild(img_card); 
+    }
+    renderCards() {
         for (let i = 0; i < this.hand.length; i++) {
-            let div_card_space = document.createElement('div'); // <-- Fix this
-            let div_card = document.createElement('img');
-            if (this.name === 'Dealer' && i === this.hand.length - 1) {
-                div_card.src = this.hand[i].imgURL = `/imgs/card_back.png`;  
-            } else {
-                div_card.src = this.hand[i].imgURL;
-            }
-            div_card_space.className = 'card-space';
-            div_card_space.id = 'div_card_space_' + i;
-            div_card.className = 'card';
-            document.getElementById('play--area').appendChild(div_card);
+            this.renderCardSingle(this.hand[i])
         }
     }
 }
@@ -167,11 +163,9 @@ player1.bet(50, house);
 
 house.dealCards(players, house.deck);
 
-
+player1.renderCards();
+dealer.renderCards();
 
 console.log(house);
 console.log(dealer)
 console.log(player1);
-
-player1.render();
-dealer.render();
