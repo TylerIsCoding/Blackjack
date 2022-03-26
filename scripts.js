@@ -52,9 +52,9 @@ class Player {
     constructor(name, bankroll, active) {
         this.name = name;
         this.bankroll = bankroll;
-        this.points = 0;
         this.active = active;
-        this.hand = new Array();
+        this.points = 0;
+        this.hand = [];
     }
     setDealer() {
         this.name = 'Dealer';
@@ -66,6 +66,18 @@ class Player {
         this.bankroll -= wager;
         house.pot += wager;
     }
+    render() {
+        for (let i = 0; i < this.hand.length; i++) {
+            let div_card = document.createElement('img');
+            if (this.name === 'Dealer' && i < this.hand.length) {
+                div_card.src = this.hand[i].imgURL = `/imgs/card_back.png`;  
+            } else {
+                div_card.src = this.hand[i].imgURL;
+            }
+            div_card.className = 'card';
+            document.getElementById('play--area').appendChild(div_card);
+        }
+    }
 }
 
 class Card {
@@ -73,13 +85,13 @@ class Card {
         this.suit = suit;
         this.face = face;
         this.value = value;
-        this.imgURL = `<img src="/imgs/${face}_of_${suit}.png" alt="${face}_of_${suit}">`;
+        this.imgURL = `/imgs/${face}_of_${suit}.png`;
     }
     backOfCard() {
-        this.imgURL = `<img src="/imgs/card_back.png" alt="Back of Card">`;
+        this.imgURL = `/imgs/card_back.png`;
     }
     frontOfCard() {
-        this.imgURL = `<img src="/imgs/${face}_of_${suit}.png" alt="${face}_of_${suit}">`;
+        this.imgURL = `/imgs/${face}_of_${suit}.png`;
     }
 }
 
@@ -87,7 +99,7 @@ class Deck {
     constructor() {
         this.cards = [];
     }
-    makeDeck () {
+    makeDeck() {
         let suit = ['hearts', 'clubs', 'spades', 'diamonds'];
         let face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
         for (let i = 0; i < suit.length; i++) {
@@ -105,7 +117,7 @@ class Deck {
             }
         }
     }
-    shuffle () {
+    shuffle() {
         for (let i = 0; i < 1000; i++) {
             let location1 = Math.floor(Math.random() * this.cards.length);
             let location2 = Math.floor(Math.random() * this.cards.length);
@@ -122,13 +134,17 @@ class House {
         this.pot = cash;
         this.deck = cards;
     }
-    dealCards(player, deck) {
-        for (let i = 0; i < 2; i++) {
-            player.hand.push(deck.cards[i]);
-            // Code to remove deck.cards[i] from house.deck.cards AFTER pushing them to the player's hand... 
+    dealCards(playerArray, deck) {
+        for (let x = 0; x < playerArray.length; x++){
+            for (let i = 0; i < 2; i++) {
+                playerArray[x].hand.push(deck.cards[i]);
+                console.log(deck.cards[i]);
+                // Remove the two cards that were dealt to this player so they are not repeated for the next player. FIX THIS!!!
+            }
         }
     }
 }
+
 
 // Test Code
 
@@ -137,6 +153,8 @@ class House {
 const player1 = new Player('Tyler', 100, true);
 const dealer = new Player();
 const house = new House(0);
+let players = [];
+players.push(player1, dealer);
 
 house.deck = new Deck();
 house.deck.makeDeck()
@@ -144,10 +162,13 @@ house.deck.shuffle();
 dealer.setDealer();
 player1.bet(50, house);
 
-house.dealCards(player1, house.deck);
-house.dealCards(dealer, house.deck);
+house.dealCards(players, house.deck);
+
+
 
 console.log(house);
 console.log(dealer)
 console.log(player1);
 
+player1.render();
+dealer.render();
