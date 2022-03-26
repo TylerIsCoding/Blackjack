@@ -35,7 +35,7 @@
 // - The 'pot' is added to the Player's bankroll
 // - A "Play Again?" button appears and reinitalizes the game. The player's bankroll is carried over.
 
-// Initialization
+// Instantiation
 
 // Creates Player.name = Player and Player.name = Dealer
 // Gives Player a bankroll unless it's bankroll is different than the starting amount (100)
@@ -44,4 +44,100 @@
 // EventListener on "btn--bet" that starts the game
 
 // Start Game
-//
+
+
+// Classes
+
+class Player {
+    constructor(name, bankroll, active) {
+        this.name = name;
+        this.bankroll = bankroll;
+        this.active = active;
+    }
+    setDealer() {
+        this.name = 'Dealer';
+        this.bankroll = Infinity;
+        this.active = false;
+    }
+    bet(wager, house) {
+        // Removes money from bankroll and adds it to the House Pot
+        this.bankroll -= wager;
+        house.pot += wager;
+    }
+}
+
+class Card {
+    constructor(suit, face, value) {
+        this.suit = suit;
+        this.face = face;
+        this.value = value;
+        this.imgURL = `<img src="/imgs/${face}_of_${suit}.png" alt="${face}_of_${suit}">`;
+    }
+    backOfCard() {
+        this.imgURL = `<img src="/imgs/card_back.png" alt="Back of Card">`;
+    }
+    frontOfCard() {
+        this.imgURL = `<img src="/imgs/${face}_of_${suit}.png" alt="${face}_of_${suit}">`;
+    }
+}
+
+class Deck {
+    constructor() {
+        this.suit = ['hearts', 'clubs', 'spades', 'diamonds'];
+        this.face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
+        this.deck = [];
+    }
+    makeDeck () {
+        for (let i = 0; i < this.suit.length; i++) {
+            for (let x = 0; x < this.face.length; x++) {
+                let value = parseInt(this.face[x]);
+                if (this.face[x] === 'jack' || this.face[x] === 'queen' || this.face[x] === 'king') {
+                    value = 10;
+                }
+                if (
+                    this.face[x] === 'ace'){
+                        value = 11;
+                    }
+                let card = new Card(this.suit[i], this.face[x], value);
+                this.deck.push(card);
+            }
+        }
+    }
+    shuffle () {
+        for (let i = 0; i < 1000; i++) {
+            let location1 = Math.floor(Math.random() * this.deck.length);
+            let location2 = Math.floor(Math.random() * this.deck.length);
+            let temp = this.deck[location1];
+
+            this.deck[location1] = this.deck[location2];
+            this.deck[location2] = temp;
+        }
+    }
+}
+
+class House {
+    constructor(cash, cards) {
+        this.pot = cash;
+        this.deck = cards;
+    }
+}
+
+// Test Code
+
+
+
+const player1 = new Player('Tyler', 100, true);
+const dealer = new Player();
+const house = new House(0);
+
+house.deck = new Deck();
+house.deck.makeDeck()
+house.deck.shuffle();
+
+dealer.setDealer();
+player1.bet(50, house);
+
+console.log(house);
+console.log(dealer)
+console.log(player1);
+
