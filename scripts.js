@@ -68,12 +68,15 @@ class Player {
     }
     render() {
         for (let i = 0; i < this.hand.length; i++) {
+            let div_card_space = document.createElement('div'); // <-- Fix this
             let div_card = document.createElement('img');
-            if (this.name === 'Dealer' && i < this.hand.length) {
+            if (this.name === 'Dealer' && i === this.hand.length - 1) {
                 div_card.src = this.hand[i].imgURL = `/imgs/card_back.png`;  
             } else {
                 div_card.src = this.hand[i].imgURL;
             }
+            div_card_space.className = 'card-space';
+            div_card_space.id = 'div_card_space_' + i;
             div_card.className = 'card';
             document.getElementById('play--area').appendChild(div_card);
         }
