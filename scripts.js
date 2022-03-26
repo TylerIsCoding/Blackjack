@@ -62,27 +62,31 @@ class Player {
         this.active = false;
     }
     bet(wager, house) {
-        // Removes money from bankroll and adds it to the House Pot
         this.bankroll -= wager;
         house.pot += wager;
     }
-    renderCardSingle(card) {
+    renderCardSingle(card, faceUp) {
         let img_card = document.createElement('img');
-        img_card.src = card.imgURL;
+        if (faceUp) {
+            img_card.src = card.imgURL;
+        } else {
+            img_card.src = '/imgs/card_back.png';
+        }
         img_card.className = 'img--card';
-        document.getElementById('play--area').appendChild(img_card); 
+        if (this.name === 'Dealer') {
+            document.getElementById('dealer--area').appendChild(img_card);
+        } else {
+            document.getElementById('player--area').appendChild(img_card);
+        }
     }
     renderCards() {
         for (let i = 0; i < this.hand.length; i++) {
             if (this.name === 'Dealer' && i === this.hand.length - 1) {
-                let img_card = document.createElement('img');
-                img_card.src = `/imgs/card_back.png`;
-                img_card.className = 'img--card';
-                document.getElementById('play--area').appendChild(img_card);
+                this.renderCardSingle(this.hand[i], false);
             } else {
-                this.renderCardSingle(this.hand[i]);
+                this.renderCardSingle(this.hand[i], true);
             }
-        }
+        }   
     }
 }
 
@@ -93,19 +97,11 @@ class Card {
         this.value = value;
         this.imgURL = `/imgs/${face}_of_${suit}.png`;
     }
-    backOfCard() {
-        this.imgURL = `/imgs/card_back.png`;
-    }
-    frontOfCard() {
-        this.imgURL = `/imgs/${face}_of_${suit}.png`;
-    }
 }
 
 class Deck {
     constructor() {
         this.cards = [];
-    }
-    makeDeck() {
         let suit = ['hearts', 'clubs', 'spades', 'diamonds'];
         let face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
         for (let i = 0; i < suit.length; i++) {
@@ -143,9 +139,7 @@ class House {
     dealCards(playerArray, deck) {
         for (let x = 0; x < playerArray.length; x++){
             for (let i = 0; i < 2; i++) {
-                playerArray[x].hand.push(deck.cards[i]);
-                console.log(deck.cards[i]);
-                // Remove the two cards that were dealt to this player so they are not repeated for the next player. FIX THIS!!! <------!!!!
+                playerArray[x].hand.push(deck.cards.pop());
             }
         }
     }
@@ -161,7 +155,6 @@ let players = [];
 players.push(player1, dealer);
 
 house.deck = new Deck();
-house.deck.makeDeck()
 house.deck.shuffle();
 dealer.setDealer();
 player1.bet(50, house);
@@ -174,3 +167,6 @@ dealer.renderCards();
 console.log(house);
 console.log(dealer)
 console.log(player1);
+
+
+// Event loops <-- Read about these
