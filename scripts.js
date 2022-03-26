@@ -52,7 +52,9 @@ class Player {
     constructor(name, bankroll, active) {
         this.name = name;
         this.bankroll = bankroll;
+        this.points = 0;
         this.active = active;
+        this.hand = new Array();
     }
     setDealer() {
         this.name = 'Dealer';
@@ -83,34 +85,34 @@ class Card {
 
 class Deck {
     constructor() {
-        this.suit = ['hearts', 'clubs', 'spades', 'diamonds'];
-        this.face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
-        this.deck = [];
+        this.cards = [];
     }
     makeDeck () {
-        for (let i = 0; i < this.suit.length; i++) {
-            for (let x = 0; x < this.face.length; x++) {
-                let value = parseInt(this.face[x]);
-                if (this.face[x] === 'jack' || this.face[x] === 'queen' || this.face[x] === 'king') {
+        let suit = ['hearts', 'clubs', 'spades', 'diamonds'];
+        let face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
+        for (let i = 0; i < suit.length; i++) {
+            for (let x = 0; x < face.length; x++) {
+                let value = parseInt(face[x]);
+                if (face[x] === 'jack' || face[x] === 'queen' || face[x] === 'king') {
                     value = 10;
                 }
                 if (
-                    this.face[x] === 'ace'){
+                    face[x] === 'ace'){
                         value = 11;
                     }
-                let card = new Card(this.suit[i], this.face[x], value);
-                this.deck.push(card);
+                let card = new Card(suit[i], face[x], value);
+                this.cards.push(card);
             }
         }
     }
     shuffle () {
         for (let i = 0; i < 1000; i++) {
-            let location1 = Math.floor(Math.random() * this.deck.length);
-            let location2 = Math.floor(Math.random() * this.deck.length);
-            let temp = this.deck[location1];
+            let location1 = Math.floor(Math.random() * this.cards.length);
+            let location2 = Math.floor(Math.random() * this.cards.length);
+            let temp = this.cards[location1];
 
-            this.deck[location1] = this.deck[location2];
-            this.deck[location2] = temp;
+            this.cards[location1] = this.cards[location2];
+            this.cards[location2] = temp;
         }
     }
 }
@@ -119,6 +121,12 @@ class House {
     constructor(cash, cards) {
         this.pot = cash;
         this.deck = cards;
+    }
+    dealCards(player, deck) {
+        for (let i = 0; i < 2; i++) {
+            player.hand.push(deck.cards[i]);
+            // Code to remove deck.cards[i] from house.deck.cards AFTER pushing them to the player's hand... 
+        }
     }
 }
 
@@ -133,9 +141,11 @@ const house = new House(0);
 house.deck = new Deck();
 house.deck.makeDeck()
 house.deck.shuffle();
-
 dealer.setDealer();
 player1.bet(50, house);
+
+house.dealCards(player1, house.deck);
+house.dealCards(dealer, house.deck);
 
 console.log(house);
 console.log(dealer)
