@@ -74,7 +74,14 @@ class Player {
     }
     renderCards() {
         for (let i = 0; i < this.hand.length; i++) {
-            this.renderCardSingle(this.hand[i])
+            if (this.name === 'Dealer' && i === this.hand.length - 1) {
+                let img_card = document.createElement('img');
+                img_card.src = `/imgs/card_back.png`;
+                img_card.className = 'img--card';
+                document.getElementById('play--area').appendChild(img_card);
+            } else {
+                this.renderCardSingle(this.hand[i]);
+            }
         }
     }
 }
@@ -138,7 +145,7 @@ class House {
             for (let i = 0; i < 2; i++) {
                 playerArray[x].hand.push(deck.cards[i]);
                 console.log(deck.cards[i]);
-                // Remove the two cards that were dealt to this player so they are not repeated for the next player. FIX THIS!!!
+                // Remove the two cards that were dealt to this player so they are not repeated for the next player. FIX THIS!!! <------!!!!
             }
         }
     }
@@ -146,8 +153,6 @@ class House {
 
 
 // Test Code
-
-
 
 const player1 = new Player('Tyler', 100, true);
 const dealer = new Player();
