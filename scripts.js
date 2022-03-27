@@ -1,52 +1,37 @@
-// Steps
-
-// 1. Making a bet
-// - Create a text entry box that allows you to bet some of your bankroll.
-// - Create text entry box "input--bet"
-// - Label box "Bet" and create a button that submits the bet
-// - Subtract input in "input--bet" from Player bankroll
-// - After subtracting the amount in the text input field from your bankroll -- calculate how much you would win based on that amount and add it to the "pot"
-// - Disable button and then make a "Deal Cards" button appear in the middle of the play field
-
-// 2. Creating a deck of cards
-// - Create 52 unique cards from the 4 suits and 11 faces
-// - Shuffle the cards in the deck
-
-// 3. Dealing the cards
-// - Deal card button 'onclick' deals two cards to each player
-// - The cards are displayed in front of the player's names.
-// - One of the House's cards are hidden and their score is not shown
-
-// 4. Hitting or Staying
-// - Display two buttons; "Hit" and "Stay"
-// - Hit button 'onclick' adds another card to the player's hand
-// - That card's value is added to the total score value of the hand
-// - The hand is checked to see if it is 21 or higher
-// - If it is not, the player can hit the "Hit" button again
-// - Stay button 'onclick' saves the value of the player's hand and reveals the Dealer's second card
-// - The Dealer auto-hits until they reach 21 or they lose
-
-// 5. Losing
-// - If the dealer hits 21 or the player goes over, they lose. The 'pot' is erased from memory.
-// - A "Play Again?" button appears and reintializes the game. The player's bankroll is carried over.
-
-// 6. Winning
-// - If the dealer's hand is over 21, the player wins
-// - The 'pot' is added to the Player's bankroll
-// - A "Play Again?" button appears and reinitalizes the game. The player's bankroll is carried over.
-
-// Instantiation
-
-// Creates Player.name = Player and Player.name = Dealer
-// Gives Player a bankroll unless it's bankroll is different than the starting amount (100)
-// Create a text-input field with the id "input--bet" and display it on "play--area"
-// Create a button with the id "btn--bet" and display it next to "input--bet"
-// EventListener on "btn--bet" that starts the game
-
-// Start Game
-
 
 // Classes
+class Game {
+    constructor () {
+        this.playing = true;
+    }
+    renderCardSingle(player, card, faceUp) {
+        let img_card = document.createElement('img');
+        if (faceUp) {
+            img_card.src = card.imgURL;
+        } else {
+            img_card.src = '/imgs/card_back.png';
+        }
+        img_card.className = 'img--card';
+        if (player.name === 'Dealer') {
+            document.getElementById('dealer--area').appendChild(img_card);
+        } else {
+            document.getElementById('player--area').appendChild(img_card);
+        }
+    }
+    renderCards(player) {
+        for (let i = 0; i < player.hand.length; i++) {
+            if (player.name === 'Dealer' && i === player.hand.length - 1) {
+                this.renderCardSingle(player, player.hand[i], false);
+            } else {
+                this.renderCardSingle(player, player.hand[i], true);
+            }
+        }   
+    }
+    isOver() {
+        this.playing = false;
+    }
+}
+
 
 class Player {
     constructor(name, bankroll, active) {
@@ -65,28 +50,10 @@ class Player {
         this.bankroll -= wager;
         house.pot += wager;
     }
-    renderCardSingle(card, faceUp) {
-        let img_card = document.createElement('img');
-        if (faceUp) {
-            img_card.src = card.imgURL;
-        } else {
-            img_card.src = '/imgs/card_back.png';
-        }
-        img_card.className = 'img--card';
-        if (this.name === 'Dealer') {
-            document.getElementById('dealer--area').appendChild(img_card);
-        } else {
-            document.getElementById('player--area').appendChild(img_card);
-        }
-    }
-    renderCards() {
+    calcPoints() {
         for (let i = 0; i < this.hand.length; i++) {
-            if (this.name === 'Dealer' && i === this.hand.length - 1) {
-                this.renderCardSingle(this.hand[i], false);
-            } else {
-                this.renderCardSingle(this.hand[i], true);
-            }
-        }   
+            this.points += this.hand[i].value;
+        }
     }
 }
 
@@ -129,6 +96,13 @@ class Deck {
             this.cards[location2] = temp;
         }
     }
+    dealCards(playerArray) {
+        for (let x = 0; x < playerArray.length; x++){
+            for (let i = 0; i < 2; i++) {
+                playerArray[x].hand.push(this.cards.pop());     
+            }
+        }
+    }
 }
 
 class House {
@@ -136,33 +110,33 @@ class House {
         this.pot = cash;
         this.deck = cards;
     }
-    dealCards(playerArray, deck) {
-        for (let x = 0; x < playerArray.length; x++){
-            for (let i = 0; i < 2; i++) {
-                playerArray[x].hand.push(deck.cards.pop());
-            }
-        }
-    }
+}
+
+testScoreFunction = function(player) {
+    player.calcPoints();
+    let score = document.getElementById("score--area--number");
+    score.innerHTML = player.points;
 }
 
 
-// Test Code
+// // Test Code
 
+let newGame = new Game();
 const player1 = new Player('Tyler', 100, true);
 const dealer = new Player();
 const house = new House(0);
 let players = [];
 players.push(player1, dealer);
 
-house.deck = new Deck();
-house.deck.shuffle();
+let deck = new Deck();
+deck.shuffle();
 dealer.setDealer();
 player1.bet(50, house);
 
-house.dealCards(players, house.deck);
-
-player1.renderCards();
-dealer.renderCards();
+deck.dealCards(players);
+newGame.renderCards(player1);
+newGame.renderCards(dealer);
+testScoreFunction(player1);
 
 console.log(house);
 console.log(dealer)
@@ -170,3 +144,12 @@ console.log(player1);
 
 
 // Event loops <-- Read about these
+
+
+// Hit button
+// event listener on the button
+// button runs function
+// function :
+// removes card from deck
+// adds card to player hand
+// updates scores
