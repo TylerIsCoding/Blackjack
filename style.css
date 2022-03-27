@@ -1,91 +1,71 @@
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
-    background-color: #00512c;
+  width: 100vw;
+  height: 100vh;
+  background-color: #00512c;
 }
 
 #play--area {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
 }
 
-.status {
-    color: white;
-    font-size: 24px;
+.card--area {
+  display: flex;
+  justify-content: center;
 }
 
-/* Names */
-
-.player {
-    display: flex;
-    flex-direction: column;
-    color: white;
-    padding: 4rem;
+#player--area {
+  padding-top: 10px;
 }
 
-.playerName {
-    display: flex;
-    justify-content: center;
-    font-size: 2rem;
+.score--area {
+  display: flex;
+  font-size: 2rem;
+  color: white;
+  padding-top: 4rem;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Card Display */
-.cardImg {
-    width: 10rem;
-    display: flex;
-    padding: 1rem;
+.btn--area {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: flex-end;
 }
 
-.hand {
-    display: flex;
-    flex-direction: row;
+.btn--action {
+  display: flex;
+  width: 5rem;
+  height: 3rem;
+  font-size: 2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
 }
 
-.div_card {
-    font-size: 12px;
+.img--card {
+  width: 15rem;
+  padding: 1rem;
 }
 
-/* Buttons */
-
-.btn--deal {
-    position: absolute;
-    display: flex;
-    width: 10rem;
-    height: 5rem;
-    top: 50%;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    font-size: 32px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#btn--hit {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    width: 4rem;
-    height: 2rem;
-    bottom: 20rem;
-}
-
-/* Hidden */
 .hidden {
-    display: none;
+  display: none;
 }

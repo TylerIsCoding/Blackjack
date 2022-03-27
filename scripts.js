@@ -1,190 +1,155 @@
-// Get elements
 
-const dealButton = document.getElementById('btn--deal');
-
-// Global variables
-
-const suits = ['spades', 'diamonds', 'clubs', 'hearts'];
-const values = [
-    'ace',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    'jack',
-    'queen',
-    'king',
-];
-let deck = new Array();
-let players = new Array();
-let currentPlayer;
-
-// Functions
-
-function getDeck() {
-    deck = new Array();
-    for (let i = 0; i < suits.length; i++) {
-        for (let x = 0; x < values.length; x++) {
-            let weight = parseInt(values[x]);
-            if (
-                values[x] === 'jack' ||
-                values[x] === 'queen' ||
-                values[x] === 'king'
-            ) {
-                weight = 10;
-            }
-            if (values[x] === 'ace') {
-                weight = 11;
-            }
-            let card = {
-                Value: values[x],
-                Suit: suits[i],
-                Weight: weight,
-            };
-            deck.push(card);
-        }
+// Classes
+class Game {
+    constructor () {
+        this.playing = true;
     }
-}
-
-function shuffle(deck) {
-    for (let i = 0; i < 1000; i++) {
-        let location1 = Math.floor(Math.random() * deck.length);
-        let location2 = Math.floor(Math.random() * deck.length);
-        let temp = deck[location1];
-
-        deck[location1] = deck[location2];
-        deck[location2] = temp;
-    }
-}
-
-function createPlayer(num) {
-    players = new Array();
-    for (let i = 1; i <= num; i++) {
-        let hand = new Array();
-        let player = {
-            Name: i === num ? 'Dealer' : 'Player_' + i,
-            ID: i,
-            Points: 0,
-            Hand: hand,
-        };
-        players.push(player);
-    }
-}
-
-function playerUI() {
-    document.getElementById('play--area').innerHTML = '';
-    for (let i = 0; i < players.length; i++) {
-        const div_player = document.createElement('div');
-        const div_playerid = document.createElement('div');
-        const div_hand = document.createElement('div');
-        const div_points = document.createElement('div');
-        const div_status = document.createElement('div');
-
-        div_points.className = 'points';
-        div_points.id = 'points_' + i;
-        div_player.id = 'player_' + i;
-        div_player.className = 'player';
-        div_hand.id = 'hand_' + i;
-        div_hand.className = 'hand';
-        div_status.id = 'status';
-
-        div_playerid.innerHTML = players[i].Name;
-        div_playerid.className = 'playerName';
-
-        div_player.appendChild(div_points);
-        div_player.appendChild(div_status);
-        div_player.appendChild(div_hand);
-        div_player.appendChild(div_playerid);
-        document.getElementById('play--area').appendChild(div_player);
-        if (i === 1) {
-            const btn_hit = document.createElement('button');
-            btn_hit.className = 'button';
-            btn_hit.id = 'btn--hit';
-            btn_hit.innerHTML = 'Hit';
-            document.getElementById('play--area').appendChild(btn_hit);
-            document
-                .getElementById('btn--hit')
-                .setAttribute('onclick', 'hit()');
+    renderCardSingle(player, card, faceUp) {
+        let img_card = document.createElement('img');
+        if (faceUp) {
+            img_card.src = card.imgURL;
         } else {
-            continue;
+            img_card.src = '/imgs/card_back.png';
+        }
+        img_card.className = 'img--card';
+        if (player.name === 'Dealer') {
+            document.getElementById('dealer--area').appendChild(img_card);
+        } else {
+            document.getElementById('player--area').appendChild(img_card);
+        }
+    }
+    renderCards(player) {
+        for (let i = 0; i < player.hand.length; i++) {
+            if (player.name === 'Dealer' && i === player.hand.length - 1) {
+                this.renderCardSingle(player, player.hand[i], false);
+            } else {
+                this.renderCardSingle(player, player.hand[i], true);
+            }
+        }   
+    }
+    isOver() {
+        this.playing = false;
+    }
+}
+
+
+class Player {
+    constructor(name, bankroll, active) {
+        this.name = name;
+        this.bankroll = bankroll;
+        this.active = active;
+        this.points = 0;
+        this.hand = [];
+    }
+    setDealer() {
+        this.name = 'Dealer';
+        this.bankroll = Infinity;
+        this.active = false;
+    }
+    bet(wager, house) {
+        this.bankroll -= wager;
+        house.pot += wager;
+    }
+    calcPoints() {
+        for (let i = 0; i < this.hand.length; i++) {
+            this.points += this.hand[i].value;
         }
     }
 }
 
-function getCardUI(card) {
-    let div_card = document.createElement('div');
-    let img_card = document.createElement('img');
-    div_card.className = 'card';
-    img_card.className = 'cardImg';
-    img_card.src = `/imgs/${card.Value}_of_${card.Suit}.png`;
-    div_card.appendChild(img_card);
-    return div_card;
-}
-
-function renderCard(card, player) {
-    let hand = document.getElementById('hand_' + player);
-    hand.appendChild(getCardUI(card));
-}
-
-function hit() {
-    let card = deck.pop();
-    players[currentPlayer].Hand.push(card);
-    renderCard(card, currentPlayer);
-    updatePoints();
-    check();
-}
-
-function getPoints(player) {
-    let points = 0;
-    for (let i = 0; i < players[player].Hand.length; i++) {
-        points += players[player].Hand[i].Weight;
-    }
-    players[player].Points = points;
-    return points;
-}
-
-function updatePoints() {
-    for (let i = 0; i < players.length; i++) {
-        getPoints(i);
-        document.getElementById('points_' + i).innerHTML = players[i].Points;
+class Card {
+    constructor(suit, face, value) {
+        this.suit = suit;
+        this.face = face;
+        this.value = value;
+        this.imgURL = `/imgs/${face}_of_${suit}.png`;
     }
 }
 
-function check() {
-    if (players[currentPlayer].Points > 21) {
-        document.getElementById('status').innerHTML =
-            players[currentPlayer].Name + ' loses!';
-        document.getElementById('status').style.display = 'inline-block';
-        end();
+class Deck {
+    constructor() {
+        this.cards = [];
+        let suit = ['hearts', 'clubs', 'spades', 'diamonds'];
+        let face = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
+        for (let i = 0; i < suit.length; i++) {
+            for (let x = 0; x < face.length; x++) {
+                let value = parseInt(face[x]);
+                if (face[x] === 'jack' || face[x] === 'queen' || face[x] === 'king') {
+                    value = 10;
+                }
+                if (
+                    face[x] === 'ace'){
+                        value = 11;
+                    }
+                let card = new Card(suit[i], face[x], value);
+                this.cards.push(card);
+            }
+        }
     }
-}
+    shuffle() {
+        for (let i = 0; i < 1000; i++) {
+            let location1 = Math.floor(Math.random() * this.cards.length);
+            let location2 = Math.floor(Math.random() * this.cards.length);
+            let temp = this.cards[location1];
 
-function dealHands() {
-    for (let i = 0; i < 2; i++) {
-        for (let x = 0; x < players.length; x++) {
-            let card = deck.pop();
-            players[x].Hand.push(card);
-            renderCard(card, x);
-            updatePoints();
+            this.cards[location1] = this.cards[location2];
+            this.cards[location2] = temp;
+        }
+    }
+    dealCards(playerArray) {
+        for (let x = 0; x < playerArray.length; x++){
+            for (let i = 0; i < 2; i++) {
+                playerArray[x].hand.push(this.cards.pop());     
+            }
         }
     }
 }
 
-function startGame() {
-    currentPlayer = 0;
-    getDeck();
-    shuffle(deck);
-    createPlayer(2);
-    playerUI();
-    dealHands();
-    document.getElementById('player_' + currentPlayer).classList.add('active');
+class House {
+    constructor(cash, cards) {
+        this.pot = cash;
+        this.deck = cards;
+    }
 }
 
-// TEST //
+testScoreFunction = function(player) {
+    player.calcPoints();
+    let score = document.getElementById("score--area--number");
+    score.innerHTML = player.points;
+}
 
-dealButton.addEventListener('click', startGame);
+
+// // Test Code
+
+let newGame = new Game();
+const player1 = new Player('Tyler', 100, true);
+const dealer = new Player();
+const house = new House(0);
+let players = [];
+players.push(player1, dealer);
+
+let deck = new Deck();
+deck.shuffle();
+dealer.setDealer();
+player1.bet(50, house);
+
+deck.dealCards(players);
+newGame.renderCards(player1);
+newGame.renderCards(dealer);
+testScoreFunction(player1);
+
+console.log(house);
+console.log(dealer)
+console.log(player1);
+
+
+// Event loops <-- Read about these
+
+
+// Hit button
+// event listener on the button
+// button runs function
+// function :
+// removes card from deck
+// adds card to player hand
+// updates scores
