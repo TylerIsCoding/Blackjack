@@ -54,6 +54,13 @@ class Player {
         for (let i = 0; i < this.hand.length; i++) {
             this.points += this.hand[i].value;
         }
+        // if (this.points > 21) {
+        // }
+    }
+    cardFlip() {
+        let cardTwo = this.hand[1];
+        const cardDown = document.getElementById('card--down');
+        cardDown.src = cardTwo.imgURL;
     }
 }
 
@@ -131,9 +138,57 @@ class House {
 
 // DOM Elements
 
-let score = document.getElementById('score--area--number');
+let playerScore = document.getElementById('score--area--number--player');
+let dealerScore = document.getElementById('score--area--number--dealer');
 const hitButton = document.getElementById('btn--hit');
 const stayButton = document.getElementById('btn--stay');
+
+// Game functions
+
+hitFunc = function () {
+    let newCard = deck.cards.pop();
+    player1.hand.push(newCard);
+    newGame.renderCardSingle(player1, newCard, true);
+    player1.points += newCard.value;
+    if (player1.points > 21) {
+        // Game over function (player loses)
+        alert('You bust! You lose!');
+    } else {
+        playerScore.innerHTML = player1.points;
+    }
+};
+
+stayFunc = function () {
+    dealer.cardFlip();
+    console.log(dealer.points);
+    dealerHitFunc();
+};
+
+dealerHitFunc = function () {
+    while (dealer.points <= player1.points) {
+        let newCard = deck.cards.pop();
+        dealer.hand.push(newCard);
+        newGame.renderCardSingle(dealer, newCard, true);
+        dealer.points += newCard.value;
+        console.log(dealer.points);
+        dealerScore.innerHTML = dealer.points;
+        if (dealer.points === 21) {
+            alert('Dealer has 21. Dealer wins.');
+            break;
+        } else if (dealer.points > 21) {
+            // Game over function (dealer loses)
+            alert('Dealer busts! You win!');
+            player1.bankroll += house.pot;
+        }
+    }
+    dealerScore.innerHTML = dealer.points;
+    // Game over function (dealer wins)
+};
+
+// Event Listeners
+
+hitButton.addEventListener('click', hitFunc);
+stayButton.addEventListener('click', stayFunc);
 
 // Game Start
 
@@ -151,43 +206,9 @@ deck.dealCards(players);
 newGame.renderCards(player1);
 newGame.renderCards(dealer);
 player1.calcPoints();
-score.innerHTML = player1.points;
-
-// Game functions
-
-hitFunc = function () {
-    let newCard = deck.cards.pop();
-    player1.hand.push(newCard);
-    newGame.renderCardSingle(player1, newCard, true);
-    player1.points += newCard.value;
-    if (player1.points > 21) {
-        score.innerHTML = `${player1.points}! You bust!`;
-    } else {
-        score.innerHTML = player1.points;
-    }
-};
-
-stayFunc = function () {
-    let cardTwo = dealer.hand[1];
-    const cardDown = document.getElementById('card--down');
-    cardDown.src = cardTwo.imgURL;
-    dealer.calcPoints();
-    if (dealer.points < 21) {
-        let newCard = deck.cards.pop();
-        dealer.hand.push(newCard);
-        newGame.renderCardSingle(dealer, newCard, true);
-        dealer.points += newCard.value;
-    } else if (dealer.points === 21) {
-        score.innerHTML = 'Dealer has 21. Dealer wins!';
-    } else {
-        score.innerHTML = 'Dealer busts! You win!';
-    }
-};
-
-// Event Listeners
-
-hitButton.addEventListener('click', hitFunc);
-stayButton.addEventListener('click', stayFunc);
+dealer.calcPoints();
+playerScore.innerHTML = player1.points;
+dealerScore.innerHTML = dealer.hand[0].value;
 
 // Console logs
 
