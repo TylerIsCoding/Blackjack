@@ -5,9 +5,65 @@
 }
 
 body {
+    position: relative;
     width: 100vw;
     height: 100vh;
     background-color: #00512c;
+}
+
+#modal--area {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#modal--name--input {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#modal--area p {
+    display: flex;
+    font-size: 3rem;
+    padding: 20px;
+    color: white;
+}
+
+.modal {
+    width: 50rem;
+    height: 20rem;
+    display: flex;
+    position: fixed;
+    background-color: rgb(53, 53, 53);
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 5px 5px 20px black;
+}
+
+.close {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 95%;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+#input--name--box {
+    width: 20rem;
+    height: 5rem;
+    font-size: 3rem;
+    padding: 5px;
+    color: white;
+    background-color: rgb(77, 77, 77);
 }
 
 #play--area {
@@ -17,6 +73,7 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    display: none;
 }
 
 .card--area {

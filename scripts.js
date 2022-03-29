@@ -153,6 +153,7 @@ hitFunc = function () {
     if (player1.points > 21) {
         // Game over function (player loses)
         alert('You bust! You lose!');
+        playerScore.innerHTML = player1.points;
     } else {
         playerScore.innerHTML = player1.points;
     }
