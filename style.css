@@ -28,9 +28,9 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#modal--area p {
+#label--name--input {
     display: flex;
-    font-size: 3rem;
+    font-size: 2rem;
     padding: 20px;
     color: white;
 }
@@ -57,10 +57,15 @@ body {
     cursor: pointer;
 }
 
+.close:hover,
+.close:focus {
+    color: black;
+}
+
 #input--name--box {
     width: 20rem;
-    height: 5rem;
-    font-size: 3rem;
+    height: 3rem;
+    font-size: 2rem;
     padding: 5px;
     color: white;
     background-color: rgb(77, 77, 77);
@@ -96,7 +101,8 @@ body {
     align-items: center;
 }
 
-#score--area--number {
+#score--area--dealer,
+#score--area--player {
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
@@ -121,6 +127,16 @@ body {
     justify-content: center;
     align-items: center;
     margin: 5px;
+}
+
+.btn--action:hover {
+    background-color: rgb(90, 90, 90);
+    color: white;
+}
+
+#btn--modal--submit {
+    width: 7rem;
+    margin: 10px;
 }
 
 .img--card {

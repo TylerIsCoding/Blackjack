@@ -138,8 +138,12 @@ class House {
 
 // DOM Elements
 
-let playerScore = document.getElementById('score--area--number--player');
-let dealerScore = document.getElementById('score--area--number--dealer');
+let playerScore = document.getElementById('score--area--player');
+let dealerScore = document.getElementById('score--area--dealer');
+let closeButton = document.getElementById('btn--modal--close');
+let submitButton = document.getElementById('btn--modal--submit');
+let playArea = document.getElementById('play--area');
+let modalArea = document.getElementById('modal--area');
 const hitButton = document.getElementById('btn--hit');
 const stayButton = document.getElementById('btn--stay');
 
@@ -153,9 +157,9 @@ hitFunc = function () {
     if (player1.points > 21) {
         // Game over function (player loses)
         alert('You bust! You lose!');
-        playerScore.innerHTML = player1.points;
+        playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     } else {
-        playerScore.innerHTML = player1.points;
+        playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     }
 };
 
@@ -182,14 +186,20 @@ dealerHitFunc = function () {
             player1.bankroll += house.pot;
         }
     }
-    dealerScore.innerHTML = dealer.points;
+    dealerScore.textContent = `${dealer.name}'s score: ${dealer.points}`;
     // Game over function (dealer wins)
+};
+
+closeModal = function () {
+    playArea.style.display = 'flex';
+    modalArea.style.display = 'none';
 };
 
 // Event Listeners
 
 hitButton.addEventListener('click', hitFunc);
 stayButton.addEventListener('click', stayFunc);
+closeButton.addEventListener('click', closeModal);
 
 // Game Start
 
@@ -208,8 +218,8 @@ newGame.renderCards(player1);
 newGame.renderCards(dealer);
 player1.calcPoints();
 dealer.calcPoints();
-playerScore.innerHTML = player1.points;
-dealerScore.innerHTML = dealer.hand[0].value;
+playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
+dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
 
 // Console logs
 
