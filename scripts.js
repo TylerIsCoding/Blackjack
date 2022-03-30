@@ -34,10 +34,9 @@ class Game {
 }
 
 class Player {
-    constructor(name, bankroll, active) {
+    constructor(name, bankroll) {
         this.name = name;
         this.bankroll = bankroll;
-        this.active = active;
         this.points = 0;
         this.hand = [];
     }
@@ -152,7 +151,11 @@ hitFunc = function () {
     let newCard = deck.cards.pop();
     player1.hand.push(newCard);
     newGame.renderCardSingle(player1, newCard, true);
-    player1.points += newCard.value;
+    if (newCard.face === 'ace') {
+        acesPoints(player1, newCard);
+    } else {
+        player1.points += newCard.value;
+    }
     if (player1.points > 21) {
         playerWin(false);
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
@@ -172,7 +175,11 @@ dealerHitFunc = function () {
         let newCard = deck.cards.pop();
         dealer.hand.push(newCard);
         newGame.renderCardSingle(dealer, newCard, true);
-        dealer.points += newCard.value;
+        if (newCard.face === 'ace') {
+            acesPoints(dealer, newCard);
+        } else {
+            dealer.points += newCard.value;
+        }
         console.log(dealer.points);
         dealerScore.innerHTML = dealer.points;
         if (dealer.points >= 21) {
@@ -195,6 +202,16 @@ playerWin = function (playerWins) {
     }
 };
 
+acesPoints = function (player, card) {
+    if (player.points + card.value > 21) {
+        card.value = 1;
+        player.points += card.value;
+    } else {
+        card.value = 11;
+        player.pounts += card.value;
+    }
+};
+
 closeModal = function () {
     playArea.style.display = 'flex';
     modalArea.style.display = 'none';
@@ -210,13 +227,11 @@ submitButton.addEventListener('click', closeModal);
 // Game Start
 
 let newGame = new Game();
-const player1 = new Player('Player', 100, true);
+const player1 = new Player('Player', 100);
 const dealer = new Player();
 const house = new House(0);
 let players = [];
 players.push(player1, dealer);
-
-while (!newGame.isOver) {}
 let deck = new Deck();
 deck.shuffle();
 dealer.setDealer();
