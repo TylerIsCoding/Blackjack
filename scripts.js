@@ -2,7 +2,7 @@
 
 class Game {
     constructor() {
-        this.playing = true;
+        this.playing = false;
     }
     renderCardSingle(player, card, faceUp) {
         let img_card = document.createElement('img');
@@ -54,8 +54,6 @@ class Player {
         for (let i = 0; i < this.hand.length; i++) {
             this.points += this.hand[i].value;
         }
-        // if (this.points > 21) {
-        // }
     }
     cardFlip() {
         let cardTwo = this.hand[1];
@@ -140,12 +138,13 @@ class House {
 
 let playerScore = document.getElementById('score--area--player');
 let dealerScore = document.getElementById('score--area--dealer');
+let nameInputBox = document.getElementById('input--name--box');
 let closeButton = document.getElementById('btn--modal--close');
 let submitButton = document.getElementById('btn--modal--submit');
 let playArea = document.getElementById('play--area');
 let modalArea = document.getElementById('modal--area');
-const hitButton = document.getElementById('btn--hit');
-const stayButton = document.getElementById('btn--stay');
+let hitButton = document.getElementById('btn--hit');
+let stayButton = document.getElementById('btn--stay');
 
 // Game functions
 
@@ -155,8 +154,7 @@ hitFunc = function () {
     newGame.renderCardSingle(player1, newCard, true);
     player1.points += newCard.value;
     if (player1.points > 21) {
-        // Game over function (player loses)
-        alert('You bust! You lose!');
+        playerWin(false);
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     } else {
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
@@ -177,17 +175,24 @@ dealerHitFunc = function () {
         dealer.points += newCard.value;
         console.log(dealer.points);
         dealerScore.innerHTML = dealer.points;
-        if (dealer.points === 21) {
-            alert('Dealer has 21. Dealer wins.');
+        if (dealer.points >= 21) {
             break;
-        } else if (dealer.points > 21) {
-            // Game over function (dealer loses)
-            alert('Dealer busts! You win!');
-            player1.bankroll += house.pot;
         }
     }
     dealerScore.textContent = `${dealer.name}'s score: ${dealer.points}`;
-    // Game over function (dealer wins)
+    if (dealer.points <= 21) {
+        playerWin(false);
+    } else {
+        playerWin(true);
+    }
+};
+
+playerWin = function (playerWins) {
+    if (playerWins) {
+        alert('you win!');
+    } else {
+        alert('you lose!');
+    }
 };
 
 closeModal = function () {
@@ -200,15 +205,18 @@ closeModal = function () {
 hitButton.addEventListener('click', hitFunc);
 stayButton.addEventListener('click', stayFunc);
 closeButton.addEventListener('click', closeModal);
+submitButton.addEventListener('click', closeModal);
 
 // Game Start
 
 let newGame = new Game();
-const player1 = new Player('Tyler', 100, true);
+const player1 = new Player('Player', 100, true);
 const dealer = new Player();
 const house = new House(0);
 let players = [];
 players.push(player1, dealer);
+
+while (!newGame.isOver) {}
 let deck = new Deck();
 deck.shuffle();
 dealer.setDealer();
@@ -221,10 +229,14 @@ dealer.calcPoints();
 playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
 dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
 
-// Console logs
-
 console.log(house);
 console.log(dealer);
 console.log(player1);
 
+// Console logs
+
 // Event loops <-- Read about these
+
+// Store the information from nameInput after clicking the submit button
+// Add a text area for the Pot
+// Add a sleep function to have a minor pause before revealing the dealer's cards for a little more suspense.
