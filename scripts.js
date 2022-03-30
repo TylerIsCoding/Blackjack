@@ -50,8 +50,18 @@ class Player {
         house.pot += wager;
     }
     calcPoints() {
+        this.points = 0;
         for (let i = 0; i < this.hand.length; i++) {
-            this.points += this.hand[i].value;
+            // check the cards and see if it's an Ace
+            if (this.hand[i].face === 'ace') {
+                // if the ace being 11 makes the points over 21, then make it 1
+                this.points + this.hand[i].value > 21
+                    ? (this.hand[i].value = 1)
+                    : (this.hand[i].value = 11);
+                this.points += this.hand[i].value;
+            } else {
+                this.points += this.hand[i].value;
+            }
         }
     }
     cardFlip() {
@@ -151,11 +161,7 @@ hitFunc = function () {
     let newCard = deck.cards.pop();
     player1.hand.push(newCard);
     newGame.renderCardSingle(player1, newCard, true);
-    if (newCard.face === 'ace') {
-        acesPoints(player1, newCard);
-    } else {
-        player1.points += newCard.value;
-    }
+    player1.calcPoints();
     if (player1.points > 21) {
         playerWin(false);
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
@@ -175,11 +181,7 @@ dealerHitFunc = function () {
         let newCard = deck.cards.pop();
         dealer.hand.push(newCard);
         newGame.renderCardSingle(dealer, newCard, true);
-        if (newCard.face === 'ace') {
-            acesPoints(dealer, newCard);
-        } else {
-            dealer.points += newCard.value;
-        }
+        dealer.calcPoints();
         console.log(dealer.points);
         dealerScore.innerHTML = dealer.points;
         if (dealer.points >= 21) {
@@ -199,16 +201,6 @@ playerWin = function (playerWins) {
         alert('you win!');
     } else {
         alert('you lose!');
-    }
-};
-
-acesPoints = function (player, card) {
-    if (player.points + card.value > 21) {
-        card.value = 1;
-        player.points += card.value;
-    } else {
-        card.value = 11;
-        player.pounts += card.value;
     }
 };
 
