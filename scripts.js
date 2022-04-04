@@ -52,17 +52,12 @@ class Player {
     calcPoints() {
         this.points = 0;
         for (let i = 0; i < this.hand.length; i++) {
-            // check the cards and see if it's an Ace
-            if (this.hand[i].face === 'ace') {
-                // if the ace being 11 makes the points over 21, then make it 1
-                this.points + this.hand[i].value > 21
-                    ? (this.hand[i].value = 1)
-                    : (this.hand[i].value = 11);
-                this.points += this.hand[i].value;
-            } else {
-                this.points += this.hand[i].value;
+            this.points += this.hand[i].value;
+            if (this.hand[i].face === 'ace' && this.points < 12) {
+                this.points += 10;
             }
         }
+        return this.points;
     }
     cardFlip() {
         let cardTwo = this.hand[1];
@@ -110,7 +105,7 @@ class Deck {
                     value = 10;
                 }
                 if (face[x] === 'ace') {
-                    value = 11;
+                    value = 1;
                 }
                 let card = new Card(suit[i], face[x], value);
                 this.cards.push(card);
@@ -148,14 +143,56 @@ class House {
 let playerScore = document.getElementById('score--area--player');
 let dealerScore = document.getElementById('score--area--dealer');
 let nameInputBox = document.getElementById('input--name--box');
+let modalArea = document.getElementById('modal--area');
+let bankrollArea = document.getElementById('bankroll');
+let potArea = document.getElementById('pot');
+
+// Buttons
 let closeButton = document.getElementById('btn--modal--close');
 let submitButton = document.getElementById('btn--modal--submit');
 let playArea = document.getElementById('play--area');
-let modalArea = document.getElementById('modal--area');
 let hitButton = document.getElementById('btn--hit');
 let stayButton = document.getElementById('btn--stay');
+let dealButton = document.getElementById('btn--deal');
+let replayButton = document.getElementById('btn--replay');
 
 // Game functions
+
+playGame = function () {
+    newGame = new Game();
+    player1 = new Player(playerName, 100);
+    dealer = new Player();
+    house = new House(0);
+    deck = new Deck();
+    players.push(player1, dealer);
+    dealButton.classList.add('hidden');
+    replayButton.classList.add('hidden');
+    hitButton.classList.remove('hidden');
+    stayButton.classList.remove('hidden');
+    buttonEnable();
+    deck.shuffle();
+    dealer.setDealer();
+    player1.bet(50, house);
+    updateBankroll();
+    deck.dealCards(players);
+    newGame.renderCards(player1);
+    newGame.renderCards(dealer);
+    player1.calcPoints();
+    dealer.calcPoints();
+    playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
+    dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
+    potArea.innerHTML = `Pot: ${house.pot}`;
+};
+
+storePlayerName = function () {
+    closeModal();
+    if (nameInputBox.value !== '') {
+        playerName = nameInputBox.value;
+    } else {
+        playerName = 'Player';
+    }
+    return playerName;
+};
 
 hitFunc = function () {
     let newCard = deck.cards.pop();
@@ -165,6 +202,9 @@ hitFunc = function () {
     if (player1.points > 21) {
         playerWin(false);
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
+    } else if (player1.points === 21) {
+        playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
+        stayFunc();
     } else {
         playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     }
@@ -202,6 +242,8 @@ playerWin = function (playerWins) {
     } else {
         alert('you lose!');
     }
+    buttonDisable();
+    replayButton.classList.remove('hidden');
 };
 
 closeModal = function () {
@@ -209,32 +251,51 @@ closeModal = function () {
     modalArea.style.display = 'none';
 };
 
+buttonDisable = function () {
+    hitButton.disabled = true;
+    hitButton.style.cursor = 'not-allowed';
+    stayButton.disabled = true;
+    stayButton.style.cursor = 'not-allowed';
+};
+
+buttonEnable = function () {
+    hitButton.disabled = false;
+    hitButton.style.cursor = 'pointer';
+    stayButton.disabled = false;
+    stayButton.style.cursor = 'pointer';
+};
+
+replayGame = function () {
+    let images = document.getElementsByTagName('img');
+    let l = images.length;
+    for (let i = 0; i < l; i++) {
+        images[0].parentNode.removeChild(images[0]);
+    }
+    playGame();
+};
+
+updateBankroll = function () {
+    bankrollArea.innerHTML = `Bankroll: ${player1.bankroll}`;
+};
+
 // Event Listeners
 
 hitButton.addEventListener('click', hitFunc);
 stayButton.addEventListener('click', stayFunc);
-closeButton.addEventListener('click', closeModal);
-submitButton.addEventListener('click', closeModal);
+closeButton.addEventListener('click', storePlayerName);
+submitButton.addEventListener('click', storePlayerName);
+dealButton.addEventListener('click', playGame);
+replayButton.addEventListener('click', replayGame);
 
 // Game Start
 
-let newGame = new Game();
-const player1 = new Player('Player', 100);
-const dealer = new Player();
-const house = new House(0);
+let newGame;
+let playerName;
+let player1;
+let dealer;
+let house;
+let deck;
 let players = [];
-players.push(player1, dealer);
-let deck = new Deck();
-deck.shuffle();
-dealer.setDealer();
-player1.bet(50, house);
-deck.dealCards(players);
-newGame.renderCards(player1);
-newGame.renderCards(dealer);
-player1.calcPoints();
-dealer.calcPoints();
-playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
-dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
 
 console.log(house);
 console.log(dealer);

@@ -23,10 +23,18 @@
         <div id="play--area">
             <div class="card--area" id="dealer--area"></div>
             <div class="score--area" id="score--area--dealer"></div>
+            <div class="btn--area" id="play--reset--area">
+                <button class="btn--action" id="btn--deal">Deal</button>
+                <button class="btn--action hidden" id="btn--replay">
+                    Play Again?
+                </button>
+            </div>
             <div class="score--area" id="score--area--player"></div>
             <div class="btn--area" id="btn--area--player">
-                <button class="btn--action" id="btn--hit">Hit</button>
-                <button class="btn--action" id="btn--stay">Stay</button>
+                <div class="bankroll" id="pot"></div>
+                <button class="btn--action hidden" id="btn--hit">Hit</button>
+                <button class="btn--action hidden" id="btn--stay">Stay</button>
+                <div class="bankroll" id="bankroll"></div>
             </div>
             <div class="card--area" id="player--area"></div>
         </div>
