@@ -146,6 +146,7 @@ let modalArea = document.getElementById('modal--area');
 let bankrollArea = document.getElementById('bankroll');
 let potArea = document.getElementById('pot');
 let winMessage = document.getElementById('win--message');
+let dealButtonArea = document.getElementById('deal--holder');
 
 // Buttons
 let closeButton = document.getElementById('btn--modal--close');
@@ -167,6 +168,8 @@ __init__ = function () {
     dealer.setDealer();
     players.push(player1, dealer);
     dealButton.classList.add('hidden');
+    dealButtonArea.classList.add('hidden');
+    dealButtonArea.style.zIndex = '-1';
     playGame();
 };
 
