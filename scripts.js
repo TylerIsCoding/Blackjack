@@ -158,20 +158,26 @@ let replayButton = document.getElementById('btn--replay');
 
 // Game functions
 
-playGame = function () {
+__init__ = function () {
     newGame = new Game();
     player1 = new Player(playerName, 100);
     dealer = new Player();
     house = new House(0);
     deck = new Deck();
+    dealer.setDealer();
     players.push(player1, dealer);
     dealButton.classList.add('hidden');
+    playGame();
+};
+
+playGame = function () {
+    player1.hand = [];
+    dealer.hand = [];
     replayButton.classList.add('hidden');
     hitButton.classList.remove('hidden');
     stayButton.classList.remove('hidden');
     buttonEnable();
     deck.shuffle();
-    dealer.setDealer();
     player1.bet(50, house);
     updateBankroll();
     deck.dealCards(players);
@@ -239,8 +245,12 @@ dealerHitFunc = function () {
 playerWin = function (playerWins) {
     if (playerWins) {
         alert('you win!');
+        player1.bankroll += house.pot * 2;
+        house.pot = 0;
+        updateBankroll();
     } else {
         alert('you lose!');
+        house.pot = 0;
     }
     buttonDisable();
     replayButton.classList.remove('hidden');
@@ -265,7 +275,7 @@ buttonEnable = function () {
     stayButton.style.cursor = 'pointer';
 };
 
-replayGame = function () {
+resetGame = function () {
     let images = document.getElementsByTagName('img');
     let l = images.length;
     for (let i = 0; i < l; i++) {
@@ -284,8 +294,8 @@ hitButton.addEventListener('click', hitFunc);
 stayButton.addEventListener('click', stayFunc);
 closeButton.addEventListener('click', storePlayerName);
 submitButton.addEventListener('click', storePlayerName);
-dealButton.addEventListener('click', playGame);
-replayButton.addEventListener('click', replayGame);
+dealButton.addEventListener('click', __init__);
+replayButton.addEventListener('click', resetGame);
 
 // Game Start
 
@@ -296,10 +306,6 @@ let dealer;
 let house;
 let deck;
 let players = [];
-
-console.log(house);
-console.log(dealer);
-console.log(player1);
 
 // Console logs
 
