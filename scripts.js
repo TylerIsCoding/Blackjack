@@ -145,6 +145,7 @@ let nameInputBox = document.getElementById('input--name--box');
 let modalArea = document.getElementById('modal--area');
 let bankrollArea = document.getElementById('bankroll');
 let potArea = document.getElementById('pot');
+let winMessage = document.getElementById('win--message');
 
 // Buttons
 let closeButton = document.getElementById('btn--modal--close');
@@ -170,6 +171,7 @@ __init__ = function () {
 };
 
 playGame = function () {
+    winMessage.classList.add('hidden');
     player1.hand = [];
     dealer.hand = [];
     replayButton.classList.add('hidden');
@@ -254,12 +256,18 @@ dealerHitFunc = function () {
 
 playerWin = function (playerWins) {
     if (playerWins) {
-        alert('you win!');
+        winMessage.classList.remove('hidden');
+        winMessage.textContent = 'You win!';
+        hitButton.classList.add('hidden');
+        stayButton.classList.add('hidden');
         player1.bankroll += house.pot * 2;
         house.pot = 0;
         updateBankroll();
     } else {
-        alert('you lose!');
+        winMessage.classList.remove('hidden');
+        winMessage.textContent = 'You lose!';
+        hitButton.classList.add('hidden');
+        stayButton.classList.add('hidden');
         house.pot = 0;
     }
     buttonDisable();

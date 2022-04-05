@@ -24,16 +24,24 @@
             <div class="card--area" id="dealer--area"></div>
             <div class="score--area" id="score--area--dealer"></div>
             <div class="btn--area" id="play--reset--area">
+                <!-- Win and Lose message divs -->
+                <div class="bankroll hidden" id="win--message"></div>
                 <button class="btn--action" id="btn--deal">Deal</button>
-                <button class="btn--action hidden" id="btn--replay">
-                    Play Again?
-                </button>
             </div>
             <div class="score--area" id="score--area--player"></div>
             <div class="btn--area" id="btn--area--player">
                 <div class="bankroll" id="pot"></div>
-                <button class="btn--action hidden" id="btn--hit">Hit</button>
-                <button class="btn--action hidden" id="btn--stay">Stay</button>
+                <div id="btn--holder">
+                    <button class="btn--action hidden" id="btn--replay">
+                        Play Again?
+                    </button>
+                    <button class="btn--action hidden" id="btn--hit">
+                        Hit
+                    </button>
+                    <button class="btn--action hidden" id="btn--stay">
+                        Stay
+                    </button>
+                </div>
                 <div class="bankroll" id="bankroll"></div>
             </div>
             <div class="card--area" id="player--area"></div>
