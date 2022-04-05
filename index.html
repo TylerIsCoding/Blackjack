@@ -21,18 +21,32 @@
             </div>
         </div>
         <div id="play--area">
+            <!-- Holds the Deal button -->
+
             <div class="deal--holder" id="deal--holder">
                 <button class="btn--action" id="btn--deal">Deal</button>
             </div>
+
+            <!-- Holds the Dealer's cards -->
             <div class="card--area" id="dealer--area"></div>
+
+            <!-- Holds the Dealer's score  -->
             <div class="score--area" id="score--area--dealer"></div>
-            <div class="btn--area" id="play--reset--area">
-                <!-- Win and Lose message divs -->
+
+            <!-- Holds the win or lose message  -->
+            <div class="text--display" id="win--message--area">
                 <div class="bankroll hidden" id="win--message"></div>
             </div>
+
+            <!-- Holds the Player's score -->
             <div class="score--area" id="score--area--player"></div>
-            <div class="btn--area" id="btn--area--player">
+
+            <!-- Holds the action buttons for Hit, Stay, Play Again, etc. -->
+            <div class="text--display" id="btn--area--player">
+                <!-- Shows the current Pot -->
                 <div class="bankroll" id="pot"></div>
+
+                <!-- Holds the buttons -->
                 <div id="btn--holder">
                     <button class="btn--action hidden" id="btn--replay">
                         Play Again?
@@ -44,8 +58,11 @@
                         Stay
                     </button>
                 </div>
+                <!-- Contains the Player's current Bankroll -->
                 <div class="bankroll" id="bankroll"></div>
             </div>
+
+            <!-- Holds the Player's cards -->
             <div class="card--area" id="player--area"></div>
         </div>
         <script src="scripts.js"></script>

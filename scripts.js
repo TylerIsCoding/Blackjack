@@ -180,7 +180,6 @@ playGame = function () {
     replayButton.classList.add('hidden');
     hitButton.classList.remove('hidden');
     stayButton.classList.remove('hidden');
-    buttonEnable();
     freshDeckCheck(deckInPlay);
     deckInPlay.shuffle();
     player1.bet(50, house);
@@ -273,7 +272,6 @@ playerWin = function (playerWins) {
         stayButton.classList.add('hidden');
         house.pot = 0;
     }
-    buttonDisable();
     replayButton.classList.remove('hidden');
 };
 
@@ -282,18 +280,14 @@ closeModal = function () {
     modalArea.style.display = 'none';
 };
 
-buttonDisable = function () {
-    hitButton.disabled = true;
-    hitButton.style.cursor = 'not-allowed';
-    stayButton.disabled = true;
-    stayButton.style.cursor = 'not-allowed';
+buttonDisable = function (button) {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
 };
 
-buttonEnable = function () {
+buttonEnable = function (button) {
     hitButton.disabled = false;
     hitButton.style.cursor = 'pointer';
-    stayButton.disabled = false;
-    stayButton.style.cursor = 'pointer';
 };
 
 resetGame = function () {
