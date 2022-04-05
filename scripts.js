@@ -52,10 +52,10 @@ class Player {
     calcPoints() {
         this.points = 0;
         for (let i = 0; i < this.hand.length; i++) {
-            this.points += this.hand[i].value;
             if (this.hand[i].face === 'ace' && this.points < 12) {
                 this.points += 10;
             }
+            this.points += this.hand[i].value;
         }
         return this.points;
     }
@@ -132,9 +132,8 @@ class Deck {
 }
 
 class House {
-    constructor(cash, cards) {
+    constructor(cash) {
         this.pot = cash;
-        this.deck = cards;
     }
 }
 
@@ -163,7 +162,7 @@ __init__ = function () {
     player1 = new Player(playerName, 100);
     dealer = new Player();
     house = new House(0);
-    deck = new Deck();
+    deckInPlay = new Deck();
     dealer.setDealer();
     players.push(player1, dealer);
     dealButton.classList.add('hidden');
@@ -177,10 +176,11 @@ playGame = function () {
     hitButton.classList.remove('hidden');
     stayButton.classList.remove('hidden');
     buttonEnable();
-    deck.shuffle();
+    freshDeckCheck(deckInPlay);
+    deckInPlay.shuffle();
     player1.bet(50, house);
     updateBankroll();
-    deck.dealCards(players);
+    deckInPlay.dealCards(players);
     newGame.renderCards(player1);
     newGame.renderCards(dealer);
     player1.calcPoints();
@@ -188,6 +188,14 @@ playGame = function () {
     playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
     potArea.innerHTML = `Pot: ${house.pot}`;
+};
+
+freshDeckCheck = function (deckArg) {
+    if (deckArg.cards.length <= 10) {
+        let newDeck = new Deck();
+        Object.assign(deckArg, newDeck);
+    }
+    return deckArg;
 };
 
 storePlayerName = function () {
@@ -201,7 +209,8 @@ storePlayerName = function () {
 };
 
 hitFunc = function () {
-    let newCard = deck.cards.pop();
+    freshDeckCheck(deckInPlay);
+    let newCard = deckInPlay.cards.pop();
     player1.hand.push(newCard);
     newGame.renderCardSingle(player1, newCard, true);
     player1.calcPoints();
@@ -219,12 +228,13 @@ hitFunc = function () {
 stayFunc = function () {
     dealer.cardFlip();
     console.log(dealer.points);
+    freshDeckCheck(deckInPlay);
     dealerHitFunc();
 };
 
 dealerHitFunc = function () {
     while (dealer.points <= player1.points) {
-        let newCard = deck.cards.pop();
+        let newCard = deckInPlay.cards.pop();
         dealer.hand.push(newCard);
         newGame.renderCardSingle(dealer, newCard, true);
         dealer.calcPoints();
@@ -311,6 +321,6 @@ let players = [];
 
 // Event loops <-- Read about these
 
-// Store the information from nameInput after clicking the submit button
+// Store the information from nameInput after clicking the submit button ! DONE !
 // Add a text area for the Pot
 // Add a sleep function to have a minor pause before revealing the dealer's cards for a little more suspense.
