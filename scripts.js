@@ -52,10 +52,10 @@ class Player {
     calcPoints() {
         this.points = 0;
         for (let i = 0; i < this.hand.length; i++) {
+            this.points += this.hand[i].value;
             if (this.hand[i].face === 'ace' && this.points < 12) {
                 this.points += 10;
             }
-            this.points += this.hand[i].value;
         }
         return this.points;
     }
@@ -161,7 +161,7 @@ let replayButton = document.getElementById('btn--replay');
 
 __init__ = function () {
     newGame = new Game();
-    player1 = new Player(playerName, 100);
+    player1 = new Player(playerName, 500);
     dealer = new Player();
     house = new House(0);
     deckInPlay = new Deck();
