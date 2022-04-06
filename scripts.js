@@ -47,7 +47,7 @@ class Player {
     }
     bet(wager, house) {
         this.bankroll -= wager;
-        house.pot += wager;
+        house.pot += Number(wager);
     }
     calcPoints() {
         this.points = 0;
@@ -142,6 +142,9 @@ class House {
 let playerScore = document.getElementById('score--area--player');
 let dealerScore = document.getElementById('score--area--dealer');
 let nameInputBox = document.getElementById('input--name--box');
+let betInputBox = document.getElementById('input--bet--box');
+let nameLabel = document.getElementById('label--name--input');
+let betLabel = document.getElementById('label--bet--input');
 let modalArea = document.getElementById('modal--area');
 let bankrollArea = document.getElementById('bankroll');
 let potArea = document.getElementById('pot');
@@ -149,8 +152,8 @@ let winMessage = document.getElementById('win--message');
 let dealButtonArea = document.getElementById('deal--holder');
 
 // Buttons
-let closeButton = document.getElementById('btn--modal--close');
 let submitButton = document.getElementById('btn--modal--submit');
+let betButton = document.getElementById('btn--bet--submit');
 let playArea = document.getElementById('play--area');
 let hitButton = document.getElementById('btn--hit');
 let stayButton = document.getElementById('btn--stay');
@@ -182,7 +185,7 @@ playGame = function () {
     stayButton.classList.remove('hidden');
     freshDeckCheck(deckInPlay);
     deckInPlay.shuffle();
-    player1.bet(50, house);
+    player1.bet(currentPot, house);
     updateBankroll();
     deckInPlay.dealCards(players);
     newGame.renderCards(player1);
@@ -203,13 +206,37 @@ freshDeckCheck = function (deckArg) {
 };
 
 storePlayerName = function () {
-    closeModal();
     if (nameInputBox.value !== '') {
         playerName = nameInputBox.value;
     } else {
         playerName = 'Player';
     }
+    placeBet();
     return playerName;
+};
+
+placeBet = function () {
+    nameInputBox.classList.add('hidden');
+    nameLabel.classList.add('hidden');
+    submitButton.classList.add('hidden');
+    betInputBox.classList.remove('hidden');
+    betLabel.classList.remove('hidden');
+    betButton.classList.remove('hidden');
+};
+
+submitBet = function () {
+    currentPot = betInputBox.value;
+    if (currentPot < 0) {
+        betLabel.innerHTML = 'Bet cannot be negative.';
+    } else if (currentPot == 0) {
+        betLabel.textContent = 'Bet cannot be $0.00';
+    } else if (currentPot > 500) {
+        betLabel.textContent = 'You do not have enough cash!';
+    } else {
+        closeModal();
+        playGame();
+        return Number(currentPot);
+    }
 };
 
 hitFunc = function () {
@@ -278,16 +305,14 @@ playerWin = function (playerWins) {
 closeModal = function () {
     playArea.style.display = 'flex';
     modalArea.style.display = 'none';
+    storePlayerName();
 };
 
-buttonDisable = function (button) {
-    button.disabled = true;
-    button.style.cursor = 'not-allowed';
-};
-
-buttonEnable = function (button) {
-    hitButton.disabled = false;
-    hitButton.style.cursor = 'pointer';
+openModal = function () {
+    playArea.style.display = 'none';
+    modalArea.style.display = 'flex';
+    resetGame();
+    placeBet();
 };
 
 resetGame = function () {
@@ -296,7 +321,6 @@ resetGame = function () {
     for (let i = 0; i < l; i++) {
         images[0].parentNode.removeChild(images[0]);
     }
-    playGame();
 };
 
 updateBankroll = function () {
@@ -307,10 +331,10 @@ updateBankroll = function () {
 
 hitButton.addEventListener('click', hitFunc);
 stayButton.addEventListener('click', stayFunc);
-closeButton.addEventListener('click', storePlayerName);
 submitButton.addEventListener('click', storePlayerName);
+betButton.addEventListener('click', submitBet);
 dealButton.addEventListener('click', __init__);
-replayButton.addEventListener('click', resetGame);
+replayButton.addEventListener('click', openModal);
 
 // Game Start
 
@@ -321,6 +345,7 @@ let dealer;
 let house;
 let deck;
 let players = [];
+nameLabel.classList.remove('hidden');
 
 // Console logs
 

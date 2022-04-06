@@ -9,20 +9,48 @@
     </head>
     <body>
         <div id="modal--area">
+            <!-- Class and ID for the modal -->
             <div class="modal" id="modal--name--input">
-                <span class="close" id="btn--modal--close">&times;</span>
-                <label for="model--name--input" id="label--name--input"
+                <!-- Label for the name input text box -->
+                <label
+                    for="model--name--input"
+                    class="hidden"
+                    id="label--name--input"
                     >Enter your name:
                 </label>
+
+                <!-- Label for the bet input text box -->
+                <label
+                    for="model--name--input"
+                    class="hidden"
+                    id="label--bet--input"
+                    >Place your bet:
+                </label>
+
+                <!-- Text input box for name -->
                 <input type="text" id="input--name--box" />
+
+                <!-- Text input box for bet -->
+                <input type="text" class="hidden" id="input--bet--box" />
+
+                <!-- Submit button for name -->
                 <button class="btn--action" id="btn--modal--submit">
                     Submit
+                </button>
+
+                <!-- Submit button for bet -->
+                <button class="btn--action hidden" id="btn--bet--submit">
+                    Place Bet
                 </button>
             </div>
         </div>
         <div id="play--area">
-            <!-- Holds the Deal button -->
+            <!-- Holds current bet -->
+            <div class="bet--holder">
+                <h1 class="current--bet" id="current--bet"></h1>
+            </div>
 
+            <!-- Holds the Deal button -->
             <div class="deal--holder" id="deal--holder">
                 <button class="btn--action" id="btn--deal">Deal</button>
             </div>
