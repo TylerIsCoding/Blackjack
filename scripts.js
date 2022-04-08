@@ -9,7 +9,7 @@ class Game {
         if (faceUp) {
             img_card.src = card.imgURL;
         } else {
-            img_card.src = '/imgs/card_back.png';
+            img_card.src = 'imgs/card_back.png';
             img_card.id = 'card--down';
         }
         img_card.className = 'img--card';
@@ -71,7 +71,7 @@ class Card {
         this.suit = suit;
         this.face = face;
         this.value = value;
-        this.imgURL = `/imgs/${face}_of_${suit}.png`;
+        this.imgURL = `imgs/${face}_of_${suit}.png`;
     }
 }
 
