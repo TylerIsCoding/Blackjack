@@ -29,7 +29,8 @@ body {
 }
 
 #label--name--input,
-#label--bet--input {
+#label--bet--input,
+#label--game--over {
     position: relative;
     display: hidden;
     font-size: 2rem;

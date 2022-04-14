@@ -127,6 +127,7 @@ class Deck {
             for (let i = 0; i < 2; i++) {
                 playerArray[x].hand.push(this.cards.pop());
             }
+            playerArray[x].calcPoints();
         }
     }
 }
@@ -150,6 +151,7 @@ let bankrollArea = document.getElementById('bankroll');
 let potArea = document.getElementById('pot');
 let winMessage = document.getElementById('win--message');
 let dealButtonArea = document.getElementById('deal--holder');
+let gameOverLabel = document.getElementById('label--game--over');
 
 // Buttons
 let submitButton = document.getElementById('btn--modal--submit');
@@ -190,8 +192,6 @@ playGame = function () {
     deckInPlay.dealCards(players);
     newGame.renderCards(player1);
     newGame.renderCards(dealer);
-    player1.calcPoints();
-    dealer.calcPoints();
     playerScore.textContent = `${player1.name}'s score: ${player1.points}`;
     dealerScore.textContent = `${dealer.name}'s score: ${dealer.hand[0].value}`;
     potArea.innerHTML = `Pot: ${house.pot}`;
@@ -298,6 +298,7 @@ playerWin = function (playerWins) {
         hitButton.classList.add('hidden');
         stayButton.classList.add('hidden');
         house.pot = 0;
+        updateBankroll();
     }
     replayButton.classList.remove('hidden');
 };
@@ -325,6 +326,18 @@ resetGame = function () {
 
 updateBankroll = function () {
     bankrollArea.innerHTML = `Bankroll: ${player1.bankroll}`;
+    if (player1.bankroll < 0) {
+        gameOver();
+    }
+};
+
+gameOver = function () {
+    playArea.style.display = 'none';
+    modalArea.style.display = 'flex';
+    betInputBox.classList.add('hidden');
+    betLabel.classList.add('hidden');
+    betButton.classList.add('hidden');
+    gameOverLabel.classList.remove('hidden');
 };
 
 // Event Listeners
@@ -346,11 +359,3 @@ let house;
 let deck;
 let players = [];
 nameLabel.classList.remove('hidden');
-
-// Console logs
-
-// Event loops <-- Read about these
-
-// Store the information from nameInput after clicking the submit button ! DONE !
-// Add a text area for the Pot
-// Add a sleep function to have a minor pause before revealing the dealer's cards for a little more suspense.
