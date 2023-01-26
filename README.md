@@ -1,8 +1,8 @@
-<h1 align="center">Black Jack</h1>
+<h1 align="center">Blackjack</h1>
 <img src="https://i.imgur.com/Kj2viG3.png">
 <br>
 <p>This is a game that I built using HTML, CSS, and JavaScript and the OOP paradigm.</p>
-<p>Link to website: <a href="https://tyleriscoding.github.io/Blackjack/">Black Jack</a></p>
+<p>Link to website: <a href="https://tyleriscoding.github.io/Blackjack/">Blackjack</a></p>
 <h2>How It's Made</h2>
 <p><strong>Tech Used:</strong> HTML5, CSS3, JavaScript</p>
 <br>
@@ -21,7 +21,7 @@ I could have:
 
 - I did not know the deckofcards API even existed when I built this.
 - I did not know how to use an API when I started this project.
-- There are a few bugs that remain and it's not 100% responsive.
+- Fixed a few bugs that remain and it's not 100% responsive.
 
 </p>
 <br>
